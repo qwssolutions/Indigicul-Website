@@ -336,21 +336,30 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(62, 47, 38, 0.75);
-      color: var(--color-latte);
-      border: 1px solid var(--color-taupe);
-      padding: 0.35rem 0.65rem;
+      background: transparent;
+      border: none;
+      color: #b8b8b8;
+      padding: 0.4rem 0.6rem;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 1.5rem;
+      font-weight: 300;
       line-height: 1;
+      opacity: 0;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      transition: opacity 0.25s ease, color 0.2s ease;
+    }
+
+    .product-image:hover .slider-arrow {
+      opacity: 1;
     }
 
     .slider-arrow:hover {
-      background: var(--color-cacao);
+      background: transparent;
+      color: var(--color-cacao);
     }
 
-    .slider-arrow.prev { left: 0.5rem; }
-    .slider-arrow.next { right: 0.5rem; }
+    .slider-arrow.prev { left: 0.35rem; }
+    .slider-arrow.next { right: 0.35rem; }
 
     .product h3 {
       font-family: "Playfair Display", serif;
