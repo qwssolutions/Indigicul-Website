@@ -372,10 +372,139 @@
       line-height: 1.5;
     }
 
+    /* ==========================================================
+       9. ORDER BUTTON & CHECKOUT / PAYMENT PAGE
+       ========================================================== */
+    .order-btn {
+      display: block;
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.7rem 1rem;
+      background: var(--color-cacao);
+      color: var(--color-latte);
+      border: 1px solid var(--color-cacao);
+      font-family: inherit;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
 
+    .order-btn:hover {
+      background: var(--color-umber);
+      border-color: var(--color-umber);
+    }
+
+    .cart-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--color-sand);
+      border: 1px solid var(--color-taupe);
+      flex-wrap: wrap;
+    }
+
+    .cart-item-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .cart-item-info img {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border: 1px solid var(--color-taupe);
+    }
+
+    .cart-item-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .qty-btn {
+      padding: 0.25rem 0.6rem;
+      background: transparent;
+      border: 1px solid var(--color-mocha);
+      color: var(--color-umber);
+      cursor: pointer;
+    }
+
+    .cart-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1.25rem;
+      background: var(--color-sand);
+      border: 1px solid var(--color-taupe);
+      margin-bottom: 2rem;
+    }
+
+    .cart-buttons {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .payment-box {
+      padding: 1.5rem;
+      background: var(--color-sand);
+      border: 1px solid var(--color-taupe);
+      max-width: 650px;
+    }
+
+    .payment-box .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .payment-box label {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-weight: 500;
+      color: var(--color-cacao);
+    }
+
+    .payment-box input,
+    .payment-box textarea,
+    .payment-box select {
+      width: 100%;
+      padding: 0.65rem;
+      border: 1px solid var(--color-taupe);
+      background: var(--color-latte);
+      color: var(--color-umber);
+      font-family: inherit;
+    }
+
+    .eft-box {
+      padding: 1rem;
+      margin: 1rem 0;
+      background: var(--color-latte);
+      border: 1px solid var(--color-taupe);
+      font-size: 0.95rem;
+    }
+
+    .confirmation-box {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      background: var(--color-latte);
+      border: 1px solid var(--color-cacao);
+    }
 
     /* ==========================================================
-       9. FOOTER
+       10. FOOTER
        ========================================================== */
     footer {
       display: flex;
@@ -391,7 +520,7 @@
     footer a { color: var(--color-saddle); cursor: pointer; text-decoration: underline; font-weight: 500; }
 
     /* ==========================================================
-       10. MOBILE
+       11. MOBILE
        ========================================================== */
     @media (max-width: 700px) {
       .tier-row { grid-template-columns: 1fr; }
@@ -550,7 +679,77 @@
       </section>
     </div>
 
-    <!-- PAGE 5: OUR STORY -->
+<!-- PAGE 5: CHECKOUT / PAYMENT -->
+<div class="page" id="checkout">
+  <section>
+    <h1 class="page-title">Your Order & Payment</h1>
+    <p>Review your selected items below and choose your preferred payment method.</p>
+
+    <!-- Cart Items List -->
+    <div id="cart-items" class="cart-list"></div>
+
+    <!-- Total & Empty Cart Actions -->
+    <div class="cart-summary">
+      <h3>Total: <span id="cart-total">R 0.00</span></h3>
+      <div class="cart-buttons">
+        <button type="button" class="btn outline" onclick="backToCatalog()">&#8592; Continue Shopping</button>
+        <button type="button" class="btn outline" onclick="clearCart()">Clear Cart</button>
+      </div>
+    </div>
+
+    <!-- Payment Details Box -->
+    <div class="payment-box" id="payment-box">
+      <h3>Complete Your Payment</h3>
+      <p>Enter your delivery details and select a payment method to finalize your order.</p>
+
+      <form id="checkout-form" onsubmit="submitOrder(event)">
+        <div class="form-group">
+          <label for="cust-name">Full Name</label>
+          <input type="text" id="cust-name" required placeholder="Your full name">
+        </div>
+
+        <div class="form-group">
+          <label for="cust-email">Email Address</label>
+          <input type="email" id="cust-email" required placeholder="you@example.com">
+        </div>
+
+        <div class="form-group">
+          <label for="cust-phone">Phone / WhatsApp Number</label>
+          <input type="tel" id="cust-phone" required placeholder="069 000 0000">
+        </div>
+
+        <div class="form-group">
+          <label for="cust-address">Delivery Address</label>
+          <textarea id="cust-address" rows="3" required placeholder="Street address, suburb, city, postal code"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="payment-method">Payment Method</label>
+          <select id="payment-method" onchange="toggleEftDetails()" required>
+            <option value="EFT">Direct Bank Transfer (EFT)</option>
+            <option value="PayFast">PayFast / Online Card Payment</option>
+          </select>
+        </div>
+
+        <!-- Bank EFT Details (Shown when EFT is selected) -->
+        <div id="eft-details" class="eft-box">
+          <strong>Bank Details for EFT:</strong>
+          <p>Account Name: Indigicul<br>
+             Bank: Your Bank Name<br>
+             Account Number: 0000000000<br>
+             Branch Code: 000000<br>
+             Reference: Your Full Name</p>
+        </div>
+
+        <button type="submit" class="btn solid order-submit-btn">Place Order</button>
+      </form>
+
+      <div id="order-confirmation" class="confirmation-box" style="display: none;"></div>
+    </div>
+  </section>
+</div>
+
+    <!-- PAGE 6: OUR STORY -->
     <div class="page" id="story">
       <section>
         <div class="story-container">
@@ -594,7 +793,7 @@
       </section>
     </div>
     
-    <!-- PAGE 6: OUR NPO -->
+    <!-- PAGE 7: OUR NPO -->
     <div class="page" id="npo">
       <section>
         <h1 class="page-title">Our NPO</h1>
@@ -841,12 +1040,15 @@
             '<h3></h3>' +
             '<p class="price"></p>' +
             '<p class="description"></p>' +
-          '</div>';
+          '</div>' +
+          '<button type="button" class="order-btn">Order</button>';
 
         card.querySelector(".label").textContent = group.category + " | " + item.tier;
         card.querySelector("h3").textContent = item.name;
         card.querySelector(".price").textContent = item.price;
         card.querySelector(".description").textContent = item.description || "";
+        card.querySelector(".order-btn").addEventListener("click", function() {
+          addToCart(item, group.category);
 
         products.appendChild(card);
       });
@@ -872,6 +1074,135 @@ function slideProduct(btn, step) {
     window.addEventListener("hashchange", showPage);
     renderCatalog();
     showPage();
+
+// ==========================================================
+// CART & CHECKOUT LOGIC
+// ==========================================================
+let cart = JSON.parse(localStorage.getItem("indigicul_cart")) || [];
+
+function parsePrice(priceStr) {
+  return parseFloat(priceStr.replace(/[^0-9.]/g, "")) || 0;
+}
+
+function formatRand(amount) {
+  return "R " + amount.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function saveCart() {
+  localStorage.setItem("indigicul_cart", JSON.stringify(cart));
+  renderCart();
+}
+
+function addToCart(item, category) {
+  const existing = cart.find(entry => entry.name === item.name);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({
+      name: item.name,
+      category: category,
+      price: item.price,
+      numericPrice: parsePrice(item.price),
+      image: (item.images && item.images[0]) ? item.images[0] : "",
+      qty: 1
+    });
+  }
+  saveCart();
+  openCheckoutPage();
+}
+
+function updateQty(index, change) {
+  cart[index].qty += change;
+  if (cart[index].qty <= 0) {
+    cart.splice(index, 1);
+  }
+  saveCart();
+}
+
+function clearCart() {
+  cart = [];
+  saveCart();
+}
+
+function openCheckoutPage() {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById("checkout").classList.add("active");
+  window.location.hash = "checkout";
+  window.scrollTo(0, 0);
+}
+
+function backToCatalog() {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById("catalog").classList.add("active");
+  window.location.hash = "catalog";
+  window.scrollTo(0, 0);
+}
+
+function renderCart() {
+  const cartContainer = document.getElementById("cart-items");
+  const totalEl = document.getElementById("cart-total");
+  const paymentBox = document.getElementById("payment-box");
+  if (!cartContainer) return;
+
+  if (cart.length === 0) {
+    cartContainer.innerHTML = "<p>Your cart is currently empty. Select a product from the catalog to order.</p>";
+    totalEl.textContent = "R 0.00";
+    paymentBox.style.display = "none";
+    return;
+  }
+
+  paymentBox.style.display = "block";
+  let grandTotal = 0;
+
+  cartContainer.innerHTML = cart.map((entry, idx) => {
+    const subtotal = entry.numericPrice * entry.qty;
+    grandTotal += subtotal;
+    return `
+      <div class="cart-item">
+        <div class="cart-item-info">
+          ${entry.image ? `<img src="${entry.image}" alt="${entry.name}">` : ""}
+          <div>
+            <strong>${entry.name}</strong>
+            <div>${entry.price} each</div>
+          </div>
+        </div>
+        <div class="cart-item-controls">
+          <button type="button" class="qty-btn" onclick="updateQty(${idx}, -1)">-</button>
+          <span>${entry.qty}</span>
+          <button type="button" class="qty-btn" onclick="updateQty(${idx}, 1)">+</button>
+          <strong style="margin-left: 0.75rem;">${formatRand(subtotal)}</strong>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  totalEl.textContent = formatRand(grandTotal);
+}
+
+function toggleEftDetails() {
+  const method = document.getElementById("payment-method").value;
+  document.getElementById("eft-details").style.display = method === "EFT" ? "block" : "none";
+}
+
+function submitOrder(event) {
+  event.preventDefault();
+  const name = document.getElementById("cust-name").value;
+  const email = document.getElementById("cust-email").value;
+  const method = document.getElementById("payment-method").value;
+  const total = document.getElementById("cart-total").textContent;
+  const confirmBox = document.getElementById("order-confirmation");
+
+  confirmBox.style.display = "block";
+  confirmBox.innerHTML =
+    "<strong>Thank you, " + name + "!</strong><br>" +
+    "Your order total is <strong>" + total + "</strong> via <strong>" + method + "</strong>.<br>" +
+    "Please send proof of payment or queries to our team. A confirmation summary has been recorded for <strong>" + email + "</strong>.";
+}
+
+// Render cart on page load
+renderCart();
+
+      
   </script>
 
 </body>
