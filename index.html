@@ -274,7 +274,7 @@
       border-bottom: 1px solid var(--color-taupe);
     }
 
-    /* ==========================================================
+       /* ==========================================================
        8. CATALOG PAGE
        ========================================================== */
     .filters {
@@ -299,28 +299,80 @@
       color: var(--color-latte);
       border-color: var(--color-cacao);
     }
-
     .product {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       min-height: 320px;
+      padding: 1.25rem;
       background: var(--color-sand);
+      border: 1px solid var(--color-taupe);
     }
 
     .product-image {
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
       aspect-ratio: 4 / 3;
       margin-bottom: 1rem;
       border: 1px solid var(--color-taupe);
-      font-family: "Playfair Display", serif;
-      font-size: 1.8rem;
-      background-size: cover;
-      background-position: center;
-      color: var(--color-mocha);
+      overflow: hidden;
+      background: var(--color-latte);
     }
+
+    .product-image img {
+      display: none;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-image img.active {
+      display: block;
+    }
+
+    .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(62, 47, 38, 0.75);
+      color: var(--color-latte);
+      border: 1px solid var(--color-taupe);
+      padding: 0.35rem 0.65rem;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .slider-arrow:hover {
+      background: var(--color-cacao);
+    }
+
+    .slider-arrow.prev { left: 0.5rem; }
+    .slider-arrow.next { right: 0.5rem; }
+
+    .product h3 {
+      font-family: "Playfair Display", serif;
+      font-size: 1.25rem;
+      color: var(--color-cacao);
+      margin: 0 0 0.25rem;
+    }
+
+    .product .price {
+      font-weight: 600;
+      color: var(--color-umber);
+      margin: 0 0 0.5rem;
+    }
+
+    .product .description {
+      font-size: 0.95rem;
+      color: var(--color-umber);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+
 
     /* ==========================================================
        9. FOOTER
@@ -575,29 +627,60 @@
       {
         category: "Handbags",
         items: [
-          { name: "Product name", tier: "Golden",         price: "R 0.00", image: "" },
-          { name: "Product name", tier: "Antique Bronze", price: "R 0.00", image: "" }
+          {
+            name: "Product name",
+            tier: "Golden",
+            price: "R 0.00",
+            description: "Write description here.",
+            images: ["images/handbag1-a.jpg", "images/handbag1-b.jpg"]
+          },
+          {
+            name: "Product name",
+            tier: "Antique Bronze",
+            price: "R 0.00",
+            description: "Write description here.",
+            images: ["images/handbag2-a.jpg"]
+          }
         ]
       },
       {
         category: "Wallets",
         items: [
-          { name: "Product name", tier: "Silver", price: "R 0.00", image: "" }
+          {
+            name: "Product name",
+            tier: "Silver",
+            price: "R 0.00",
+            description: "Write description here.",
+            images: ["images/wallet1-a.jpg", "images/wallet1-b.jpg"]
+          }
         ]
       },
       {
         category: "Belts",
         items: [
-          { name: "Product name", tier: "Antique Bronze", price: "R 0.00", image: "" }
+          {
+            name: "Product name",
+            tier: "Antique Bronze",
+            price: "R 0.00",
+            description: "Write description here.",
+            images: ["images/belt1-a.jpg"]
+          }
         ]
       },
       {
         category: "Accessories",
         items: [
-          { name: "Product name", tier: "Silver", price: "R 0.00", image: "" }
+          {
+            name: "Product name",
+            tier: "Silver",
+            price: "R 0.00",
+            description: "Write description here.",
+            images: ["images/acc1-a.jpg"]
+          }
         ]
       }
     ];
+
 
     /* SITE LOGIC */
     const pages       = document.querySelectorAll(".page");
@@ -637,34 +720,51 @@
         filters.appendChild(button);
       });
 
-      CATALOG
-        .filter(group => selectedCategory === "All" || group.category === selectedCategory)
-        .forEach(group => {
-          group.items.forEach(item => {
-            const card = document.createElement("div");
-            card.className = "card product";
-            card.innerHTML =
-              '<div>' +
-                '<div class="product-image"></div>' +
-                '<span class="label"></span>' +
-                '<h3></h3>' +
-                '<p></p>' +
-              '</div>' +
-              '<a class="btn solid" target="_blank" rel="noopener">Enquire</a>';
+    CATALOG
+    .filter(group => selectedCategory === "All" || group.category === selectedCategory)
+    .forEach(group => {
+      group.items.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card product";
 
-            const image = card.querySelector(".product-image");
-            if (item.image) image.style.backgroundImage = "url('" + item.image + "')";
-            else            image.textContent = "INDIGICUL";
+        const imgs = item.images && item.images.length ? item.images : [];
+        const imgsHtml = imgs.length
+          ? imgs.map((src, idx) => `<img src="${src}" alt="${item.name}" class="${idx === 0 ? 'active' : ''}">`).join("")
+          : "INDIGICUL";
 
-            card.querySelector(".label").textContent = group.category + " | " + item.tier;
-            card.querySelector("h3").textContent     = item.name;
-            card.querySelector("p").textContent      = item.price;
-            card.querySelector("a").href             = whatsappLink(item.name + " (" + group.category + ")");
+        const arrowsHtml = imgs.length > 1
+          ? '<button type="button" class="slider-arrow prev" onclick="slideProduct(this, -1)" aria-label="Previous">&#10094;</button>' +
+            '<button type="button" class="slider-arrow next" onclick="slideProduct(this, 1)" aria-label="Next">&#10095;</button>'
+          : "";
 
-            products.appendChild(card);
-          });
-        });
-    }
+        card.innerHTML =
+          '<div>' +
+            '<div class="product-image">' + imgsHtml + arrowsHtml + '</div>' +
+            '<span class="label"></span>' +
+            '<h3></h3>' +
+            '<p class="price"></p>' +
+            '<p class="description"></p>' +
+          '</div>';
+
+        card.querySelector(".label").textContent = group.category + " | " + item.tier;
+        card.querySelector("h3").textContent = item.name;
+        card.querySelector(".price").textContent = item.price;
+        card.querySelector(".description").textContent = item.description || "";
+
+        products.appendChild(card);
+      });
+    });
+}
+
+function slideProduct(btn, step) {
+  const box = btn.closest(".product-image");
+  const imgs = box.querySelectorAll("img");
+  let current = Array.from(imgs).findIndex(img => img.classList.contains("active"));
+
+  imgs[current].classList.remove("active");
+  let next = (current + step + imgs.length) % imgs.length;
+  imgs[next].classList.add("active");
+}
 
     document.querySelectorAll("[data-whatsapp]").forEach(button => {
       button.href   = whatsappLink(button.dataset.whatsapp);
